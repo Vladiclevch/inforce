@@ -16,12 +16,12 @@ Additional tests for Login, Checkout: Your Information, Product pages
 
 2. Clone the repository
 
-3. Create a new branch: git checkout -b <name>
+3. Create a new branch: git checkout -b "name"
 
 4. Run the commands:
-    npm install
-    npm install cypress --save-dev
-    npm install @faker-js/faker --save-dev
+1) npm install
+2) npm install cypress --save-dev
+3) npm install @faker-js/faker --save-dev
 
 # Test executions
 
