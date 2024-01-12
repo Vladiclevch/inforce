@@ -1,40 +1,30 @@
 /// <reference types="cypress"/>
 
-import ProductPageObject from "../support/pages/products.pageObject";
-
-const product = new ProductPageObject();
+const username = Cypress.env('USERNAME');
+const password = Cypress.env('PASSWORD');
 const {
-  usernames, 
-  passwords,
-  CART_BUDGE_NUMBER
+  ITEMS_COUNT
 } = require('../support/variables.js');
 
 describe('Product page', () => {
   beforeEach(() => {
-    cy.login(usernames.standardUser, passwords.validPassword);
-    product.assertContainCartIcon();
-    product.assertCartIsEmpty();
+    cy.login(username['standard'], password['valid']);
   });
 
-  it('should provide an ability to add one item to the cart', () => {
-    cy.addOneItem();
-    product.assertCartBudgeNumber(CART_BUDGE_NUMBER.ONE);
+  it('should provide an ability to add 1 item to the cart', () => {
+    cy.addItemsToCart(ITEMS_COUNT.ONE);
   });
 
-  it('should provide an ability to add two items to the cart', () => {
-    cy.addTwoItems();
-    product.assertCartBudgeNumber(CART_BUDGE_NUMBER.TWO);
+  it('should provide an ability to add 2 items to the cart', () => {
+    cy.addItemsToCart(ITEMS_COUNT.TWO);
   });
 
-  it('should provide an ability to add three items to the cart', () => {
-    cy.addThreeItems();
-    product.assertCartBudgeNumber(CART_BUDGE_NUMBER.THREE);
+  it('should provide an ability to add 5 items to the cart', () => {
+    cy.addItemsToCart(ITEMS_COUNT.FIVE);
   });
 
-  it('should provide an ability to add and remove all items to the cart', () => {
-    cy.addAllItems();
-    product.assertCartBudgeNumber(CART_BUDGE_NUMBER.SIX);
-    cy.removeAllItems();
-    product.assertCartIsEmpty();
+  it('should provide an ability to add and remove all items from the cart', () => {
+    cy.addItemsToCart(ITEMS_COUNT.SIX);
+    cy.removeItemsFromCart(ITEMS_COUNT.SIX);
   });
 });

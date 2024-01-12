@@ -1,50 +1,82 @@
 /// <reference types="cypress"/>
 
-import CartPageObject from '../support/pages/cart.pageObject.js';
-import ProductPageObject from '../support/pages/products.pageObject.js';
-import CheckoutOverviewPageObject from '../support/pages/checkoutOverview.pageObject.js';
-import CheckoutYourInfoPageObject from '../support/pages/checkoutYourInfo.pageObject.js';
-
-const cart = new CartPageObject();
-const product = new ProductPageObject();
-const checkoutOverview = new CheckoutOverviewPageObject();
-const checkoutInfo = new CheckoutYourInfoPageObject();
+const username = Cypress.env('USERNAME');
+const password = Cypress.env('PASSWORD');
 const {
-  usernames, 
-  passwords,
   itemsName,
-  checkoutInfoForm
+  checkoutInfoInput,
+  ITEMS_COUNT
 } = require('../support/variables.js');
+const elements = require('../support/commands.js');
 
 describe('Cart page', () => {
   beforeEach(() => {
-    cy.login(usernames.standardUser, passwords.validPassword);
+    cy.login(username['standard'], password['valid']);
   });
 
-  it('should provide an ability to display 2 items', () => {
-    cy.addTwoItems();
-    product.clickCartIconBtn();
-    cart.assertItemName(itemsName.backpack);
-    cart.assertItemName(itemsName.bikeLight);
+  it('should provide an ability to display 2 items on cart page', () => {
+    cy.addItemsToCart(ITEMS_COUNT.TWO);
+    cy.clickOnIcon(elements.header.cartIcon());
+
+    cy.verifyCartProducts([
+      {name: itemsName.backpack },
+      {name: itemsName.bikeLight },
+    ]);
   });
 
   it('should provide an ability to display 3 same items on cart and checkout pages', () => {
-    cy.addThreeItems();
-    product.clickCartIconBtn();
-    cart.assertItemName(itemsName.backpack);
-    cart.assertItemName(itemsName.bikeLight);
-    cart.assertItemName(itemsName.boltTShirt);
-    cart.clickCheckoutBtn();
-    
-    cy.fillCheckoutInfoForm(
-      checkoutInfoForm.firstName,
-      checkoutInfoForm.lastName,
-      checkoutInfoForm.postalCode
-    );
-    checkoutInfo.clickContinueBtn();
+    cy.addItemsToCart(ITEMS_COUNT.THREE);
+    cy.clickOnIcon(elements.header.cartIcon());
 
-    checkoutOverview.assertItemName(itemsName.backpack);
-    checkoutOverview.assertItemName(itemsName.bikeLight);
-    checkoutOverview.assertItemName(itemsName.boltTShirt);
+    cy.verifyCartProducts([
+      {name: itemsName.backpack },
+      {name: itemsName.bikeLight },
+      {name: itemsName.boltTShirt },
+    ]);
+
+    cy.clickOnButton('checkout');
+
+    cy.completeCheckoutInfo(
+      checkoutInfoInput.firstName,
+      checkoutInfoInput.lastName,
+      checkoutInfoInput.postalCode
+    );
+
+    cy.verifyCartProducts([
+      {name: itemsName.backpack },
+      {name: itemsName.bikeLight },
+      {name: itemsName.boltTShirt },
+    ]);
+  });
+
+  it('should provide an ability to display 6 same items on cart and checkout pages', () => {
+    cy.addItemsToCart(ITEMS_COUNT.SIX);
+    cy.clickOnIcon(elements.header.cartIcon());
+
+    cy.verifyCartProducts([
+      {name: itemsName.backpack },
+      {name: itemsName.bikeLight },
+      {name: itemsName.boltTShirt },
+      {name: itemsName.jacket },
+      {name: itemsName.onesie },
+      {name: itemsName.redTShirt },
+    ]);
+
+    cy.clickOnButton('checkout');
+
+    cy.completeCheckoutInfo(
+      checkoutInfoInput.firstName,
+      checkoutInfoInput.lastName,
+      checkoutInfoInput.postalCode
+    );
+
+    cy.verifyCartProducts([
+      {name: itemsName.backpack },
+      {name: itemsName.bikeLight },
+      {name: itemsName.boltTShirt },
+      {name: itemsName.jacket },
+      {name: itemsName.onesie },
+      {name: itemsName.redTShirt },
+    ]);
   });
 });

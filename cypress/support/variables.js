@@ -1,21 +1,6 @@
 const { faker } = require('@faker-js/faker');
 
 //variables for the login page
-const usernames = {
-  standardUser: 'standard_user',
-  lockedOutUser: 'locked_out_user',
-  problemUser: 'problem_user',
-  performanceGlitchUser: 'performance_glitch_user',
-  errorUser: 'error_user',
-  visualUser: 'visual_user',
-  nonexistingUser: 'nonexisting_user'
-};
-
-const passwords = {
-  validPassword: 'secret_sauce',
-  invalidPassword: 'Pass#45Word'
-};
-
 const loginErrorMessages = {
   invalidCredentials: 'Epic sadface: Username and password do not match any user in this service',
   emptyPassword: 'Epic sadface: Password is required',
@@ -23,7 +8,7 @@ const loginErrorMessages = {
 };
 
 //variables for the product page
-const CART_BUDGE_NUMBER = {
+const ITEMS_COUNT = {
   ONE: 1,
   TWO: 2,
   THREE: 3,
@@ -53,7 +38,7 @@ const itemsPrice = {
 }
 
 //variables for checkout pages
-const checkoutInfoForm = {
+const checkoutInfoInput = {
   firstName: faker.person.firstName(),
   lastName: faker.person.lastName(),
   postalCode: faker.location.zipCode()
@@ -77,15 +62,24 @@ const checkoutSuccessInfo = {
   text: 'Your order has been dispatched, and will arrive just as fast as the pony can get there!'
 };
 
+const url = {
+  login: '',
+};
+
+const pageName = {
+  product: 'Products',
+  checkoutOverview: 'Checkout: Overview',
+};
+
 export {
-  usernames,
-  passwords,
   loginErrorMessages,
-  CART_BUDGE_NUMBER,
+  ITEMS_COUNT,
   itemsName,
-  checkoutInfoForm,
+  checkoutInfoInput,
   checkoutSuccessInfo,
   checkoutPlaceholder,
   itemsPrice,
-  checkoutYourInfoErrors
+  checkoutYourInfoErrors,
+  url,
+  pageName
 };

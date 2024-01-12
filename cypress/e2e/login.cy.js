@@ -1,48 +1,54 @@
 /// <reference types="cypress"/>
 
-import LoginPageObject from "../support/pages/singIn.pageObject";
+const username = Cypress.env('USERNAME');
+const password = Cypress.env('PASSWORD');
 
-const login = new LoginPageObject();
 const {
-  usernames, 
-  passwords,
-  loginErrorMessages
+  loginErrorMessages,
+  url,
+  pageName
 } = require('../support/variables.js');
 
 describe('Login page', () => {
   beforeEach(() => {
-    cy.visit('');
+    cy.visit(url.login);
   });
   
   it('should provide an ability to log in with existing credentials', () => {
-    login.typeEmail(usernames.standardUser);
-    login.typePassword(passwords.validPassword);
-    login.clickLoginBtn();
+    cy.login(username['standard'], password['valid']);
   });
 
   it('should not provide an ability to log in with nonexisting username', () => {
-    login.typeEmail(usernames.nonexistingUser);
-    login.typePassword(passwords.validPassword);
-    login.clickLoginBtn();
-    login.assertErrorMessage(loginErrorMessages.invalidCredentials);
+    cy.fillTheField('username', username['nonexisting']);
+    cy.fillTheField('password', password['valid']);
+    cy.clickOnButton('login-button');
+    
+    cy.assertLoginErrorMessageText(loginErrorMessages.invalidCredentials);
+    cy.contains(pageName.product).should('not.exist');
   });
 
   it('should not provide an ability to log in with invalid password', () => {
-    login.typeEmail(usernames.standardUser);
-    login.typePassword(passwords.invalidPassword);
-    login.clickLoginBtn();
-    login.assertErrorMessage(loginErrorMessages.invalidCredentials);
+    cy.fillTheField('username', username['standard']);
+    cy.fillTheField('password', password['invalid']);
+    cy.clickOnButton('login-button');
+
+    cy.assertLoginErrorMessageText(loginErrorMessages.invalidCredentials);
+    cy.contains(pageName.product).should('not.exist');
   });
 
   it('should not provide an ability to log in without username', () => {
-    login.typePassword(passwords.validPassword);
-    login.clickLoginBtn();
-    login.assertErrorMessage(loginErrorMessages.emptyUsername);
+    cy.fillTheField('password', password['valid']);
+    cy.clickOnButton('login-button');
+    
+    cy.assertLoginErrorMessageText(loginErrorMessages.emptyUsername);
+    cy.contains(pageName.product).should('not.exist');
   });
 
   it('should not provide an ability to log in without password', () => {
-    login.typeEmail(usernames.standardUser);
-    login.clickLoginBtn();
-    login.assertErrorMessage(loginErrorMessages.emptyPassword);
+    cy.fillTheField('username', username['standard']);
+    cy.clickOnButton('login-button');
+
+    cy.assertLoginErrorMessageText(loginErrorMessages.emptyPassword);
+    cy.contains(pageName.product).should('not.exist');
   });
 });
